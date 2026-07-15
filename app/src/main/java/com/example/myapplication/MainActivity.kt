@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,7 +19,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
@@ -36,7 +37,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             MyApplicationTheme {
                 Scaffold(
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
+                    containerColor = Color(0xFFFAFAFA)
                 ) { innerPadding ->
                     BusinessCard(
                         modifier = Modifier.padding(innerPadding)
@@ -49,121 +51,106 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun BusinessCard(modifier: Modifier = Modifier) {
-    // Vibrant maximalist gradient
-    val mainGradient = Brush.verticalGradient(
-        colors = listOf(
-            Color(0xFFFF00CC), // Hot Pink
-            Color(0xFF3333FF), // Neon Blue
-            Color(0xFF00FFCC)  // Cyan
-        )
-    )
-
     Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(mainGradient)
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
     ) {
+
+        Box(
+            modifier = Modifier
+                .fillMaxHeight(0.6f)
+                .width(1.dp)
+                .align(Alignment.Center)
+                .offset(x = (-40).dp)
+                .background(Color.LightGray.copy(alpha = 0.5f))
+        )
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(20.dp),
-            verticalArrangement = Arrangement.SpaceBetween,
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(32.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceAround
         ) {
-            // Header / Identity Section
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 40.dp)
-                    .background(
-                        Color.Black.copy(alpha = 0.3f),
-                        shape = RoundedCornerShape(32.dp)
-                    )
-                    .border(3.dp, Color.White, RoundedCornerShape(32.dp))
-                    .padding(24.dp)
-            ) {
+
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Surface(
                     shape = CircleShape,
                     modifier = Modifier
-                        .size(160.dp)
-                        .border(6.dp, Color(0xFF00FFCC), CircleShape),
+                        .size(150.dp)
+                        .padding(4.dp)
+                        .border(1.dp, Color.LightGray.copy(alpha = 0.8f), CircleShape),
                     color = Color.White
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.ellefanningwhathtehelly),
+                        painter = painterResource(id = R.drawable.asdasdasdsfsaf),
                         contentDescription = "Profile Picture",
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .clip(CircleShape),
                         contentScale = ContentScale.Crop
                     )
                 }
-                Spacer(modifier = Modifier.height(20.dp))
+                
+                Spacer(modifier = Modifier.height(32.dp))
+                
                 Text(
-                    text = "ELLA FANNING",
-                    fontSize = 44.sp,
-                    fontWeight = FontWeight.Black,
-                    color = Color.White,
-                    letterSpacing = 2.sp,
-                    lineHeight = 44.sp
+                    text = "Jan Linux Orbeta",
+                    fontSize = 36.sp,
+                    fontWeight = FontWeight.Light,
+                    letterSpacing = 6.sp,
+                    color = Color.Black
                 )
+                
                 Text(
-                    text = "SENIOR SOFTWARE ARCHITECT",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    color = Color(0xFFFFDE03), // Bright Yellow
-                    letterSpacing = 2.sp
+                    text = "SOFTWARE ARCHITECT",
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 3.sp,
+                    color = Color(0xFF9E9E9E)
                 )
             }
 
-            // Contact Details Section
-            Column(
+
+            Surface(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 40.dp)
-                    .background(
-                        Color.White,
-                        shape = RoundedCornerShape(32.dp)
-                    )
-                    .border(4.dp, Color(0xFFFF00CC), RoundedCornerShape(32.dp))
-                    .padding(20.dp)
+                    .fillMaxWidth(0.9f)
+                    .height(IntrinsicSize.Min),
+                shape = RoundedCornerShape(20.dp),
+                color = Color.White,
+                shadowElevation = 2.dp,
+                border = BorderStroke(1.dp, Color.LightGray.copy(alpha = 0.3f))
             ) {
-                ContactRowMax(icon = Icons.Default.Phone, text = "+63 934-224-5678", color = Color(0xFF3333FF))
-                HorizontalDivider(color = Color.LightGray, thickness = 1.dp, modifier = Modifier.padding(horizontal = 8.dp))
-                ContactRowMax(icon = Icons.Default.Share, text = "@efanning", color = Color(0xFFFF00CC))
-                HorizontalDivider(color = Color.LightGray, thickness = 1.dp, modifier = Modifier.padding(horizontal = 8.dp))
-                ContactRowMax(icon = Icons.Default.Email, text = "reallyreal@gmail.com", color = Color(0xFF00BFA5))
+                Column(
+                    modifier = Modifier.padding(24.dp),
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    ContactRowUnique(icon = Icons.Default.Phone, text = "+63 934 224 5678")
+                    Spacer(modifier = Modifier.height(16.dp))
+                    ContactRowUnique(icon = Icons.Default.Share, text = "@whathtel")
+                    Spacer(modifier = Modifier.height(16.dp))
+                    ContactRowUnique(icon = Icons.Default.Email, text = "jorbeta04647@gmail.com")
+                }
             }
         }
     }
 }
 
 @Composable
-fun ContactRowMax(icon: ImageVector, text: String, color: Color) {
-    Row(
-        modifier = Modifier
-            .padding(vertical = 12.dp)
-            .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Box(
-            modifier = Modifier
-                .size(45.dp)
-                .background(color, RoundedCornerShape(12.dp)),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier.size(24.dp)
-            )
-        }
+fun ContactRowUnique(icon: ImageVector, text: String) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = Color(0xFF424242),
+            modifier = Modifier.size(18.dp)
+        )
         Spacer(modifier = Modifier.width(20.dp))
         Text(
             text = text,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.Black
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Medium,
+            color = Color(0xFF616161)
         )
     }
 }
