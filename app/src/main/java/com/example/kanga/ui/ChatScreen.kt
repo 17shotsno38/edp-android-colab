@@ -21,7 +21,7 @@ fun ChatScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Kanga") },
+                title = { Text("LiceoChat") },
                 actions = {
                     IconButton(onClick = { viewModel.load() }) {
                         Icon(Icons.Default.Refresh, contentDescription = "Refresh")
@@ -35,8 +35,24 @@ fun ChatScreen(
                 when (val state = viewModel.uiState) {
                     ChatUiState.Loading -> CircularProgressIndicator(Modifier.align(Alignment.Center))
                     ChatUiState.Empty -> Text("No messages yet. Say hello!", Modifier.align(Alignment.Center))
-                    is ChatUiState.Ready -> LazyColumn(Modifier.fillMaxSize()) {
-                        items(state.messages, key = { it.id }) { MessageRow(it) }
+                    is ChatUiState.Ready -> {
+                        Column(Modifier.fillMaxSize()) {
+                            if (state.errorMessage != null) {
+                                Surface(color = MaterialTheme.colorScheme.errorContainer) {
+                                    Text(
+                                        text = state.errorMessage,
+                                        modifier = Modifier.fillMaxWidth().padding(8.dp),
+                                        color = MaterialTheme.colorScheme.onErrorContainer
+                                    )
+                                }
+                            }
+                            LazyColumn(Modifier.weight(1f)) {
+                                items(state.messages, key = { it.id }) { MessageRow(it) }
+                            }
+                            if (state.isRefreshing) {
+                                LinearProgressIndicator(Modifier.fillMaxWidth())
+                            }
+                        }
                     }
                     is ChatUiState.Error -> Column(
                         modifier = Modifier.fillMaxSize(),
@@ -53,6 +69,7 @@ fun ChatScreen(
             MessageInput(
                 name = viewModel.myName,
                 draft = viewModel.draft,
+                isSending = viewModel.isSending,
                 onNameChange = viewModel::onNameChange,
                 onDraftChange = viewModel::onDraftChange,
                 onSend = viewModel::send
@@ -74,6 +91,7 @@ fun MessageRow(message: Message) {
 fun MessageInput(
     name: String,
     draft: String,
+    isSending: Boolean,
     onNameChange: (String) -> Unit,
     onDraftChange: (String) -> Unit,
     onSend: () -> Unit
@@ -84,7 +102,8 @@ fun MessageInput(
             onValueChange = onNameChange,
             label = { Text("Your full name") },
             singleLine = true,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            enabled = !isSending
         )
         Spacer(Modifier.height(8.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -92,10 +111,24 @@ fun MessageInput(
                 value = draft,
                 onValueChange = onDraftChange,
                 label = { Text("Message") },
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                enabled = !isSending
             )
             Spacer(Modifier.width(8.dp))
-            Button(onClick = onSend) { Text("Send") }
+            Button(
+                onClick = onSend,
+                enabled = !isSending && name.isNotBlank() && draft.isNotBlank()
+            ) {
+                if (isSending) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        strokeWidth = 2.dp,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                } else {
+                    Text("Send")
+                }
+            }
         }
     }
 }

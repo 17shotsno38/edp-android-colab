@@ -36,10 +36,11 @@ class ChatRepositoryImpl(
         }
     }
 
-    override suspend fun sendMessage(sender: String, text: String): AppResult<Unit> = safeCall {
+    override suspend fun sendMessage(sender: String, text: String): AppResult<Message> = safeCall {
         val dto = NewMessageDto(sender, text, System.currentTimeMillis())
-        api.sendMessage(dto)
-        Unit
+        val response = api.sendMessage(dto).toDomain()
+        dao.insertAll(listOf(response.toEntity()))
+        response
     }
 
     private inline fun <T> safeCall(block: () -> T): AppResult<T> =
